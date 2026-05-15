@@ -1,0 +1,57 @@
+/* ============ FinTrack Admin — Tokens ============ */
+:root {
+  /* Layers */
+  --bg-page: #0B0E0D;
+  --bg-card: #14191A;
+  --bg-elev: #1C2223;
+  --bg-row-alt: #11161654;
+  --bg-hover: #1B2122;
+
+  /* Borders */
+  --border: #1F2627;
+  --border-strong: #2A3334;
+  --border-hairline: #181D1E;
+
+  /* Text */
+  --text-primary: #E8ECEA;
+  --text-secondary: #9CA5A2;
+  --text-tertiary: #5F6968;
+  --text-disabled: #404948;
+
+  /* Brand sage / olive */
+  --brand: oklch(0.74 0.10 132);
+  --brand-strong: oklch(0.78 0.12 130);
+  --brand-soft: oklch(0.74 0.10 132 / 0.14);
+  --brand-line: oklch(0.74 0.10 132 / 0.32);
+
+  /* States */
+  --healthy: oklch(0.74 0.10 132);
+  --healthy-soft: oklch(0.74 0.10 132 / 0.14);
+  --warning: oklch(0.78 0.10 76);
+  --warning-soft: oklch(0.78 0.10 76 / 0.14);
+  --critical: oklch(0.66 0.10 28);
+  --critical-soft: oklch(0.66 0.10 28 / 0.14);
+  --neutral: #6B7574;
+  --neutral-soft: #6B75741F;
+
+  /* Chart palette — 6 hues, equal chroma & lightness */
+  --c1: oklch(0.74 0.10 132);  /* sage */
+  --c2: oklch(0.74 0.10 76);   /* amber */
+  --c3: oklch(0.74 0.10 230);  /* cyan-blue */
+  --c4: oklch(0.74 0.10 300);  /* mauve */
+  --c5: oklch(0.74 0.10 28);   /* terracotta */
+  --c6: oklch(0.74 0.10 178);  /* teal */
+
+  /* Type */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, monospace;
+
+  /* Radii */
+  --r-sm: 4px;
+  --r-md: 6px;
+  --r-lg: 8px;
+  --r-xl: 12px;
+
+  /* Shadows */
+  --shadow-elev: 0 8px 24px rgba(0,0,0,0.32), 0 0 0 1px var(--border);
+}
