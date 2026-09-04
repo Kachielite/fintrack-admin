@@ -17,6 +17,7 @@ import { useRegexTemplates } from '@/hooks/use-regex-templates';
 import { useAuditQueue } from '@/hooks/use-audit-queue';
 import { useRegexGaps } from '@/hooks/use-regex-gaps';
 import { fmt } from '@/utils/fmt';
+import { downloadCsv } from '@/utils/csv-export';
 import apiClient from '@/network/api-client';
 import { API_ENDPOINTS } from '@/constants/api-endpoints';
 import { QUERY_KEYS } from '@/constants/query-keys';
@@ -78,6 +79,16 @@ export function RegexEnginePage() {
     },
   });
 
+  const bulkReaudit = useMutation({
+    mutationFn: () => apiClient.post(API_ENDPOINTS.BULK_REAUDIT),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.AUDIT_QUEUE] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.REGEX_HEALTH] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.REGEX_TEMPLATES] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.OVERVIEW] });
+    },
+  });
+
   if (hLoading || tLoading || aLoading || gLoading) return <Spinner />;
   if (hError || !health) return <ErrorState />;
   if (tError || !tplData) return <ErrorState />;
@@ -109,6 +120,22 @@ export function RegexEnginePage() {
       return tplSort.dir === 'asc' ? cmp : -cmp;
     });
 
+  function handleExport() {
+    downloadCsv(
+      'regex-templates.csv',
+      filteredTpls.map((t) => ({
+        id: t.id,
+        bank_name: t.bank_name,
+        status: t.status,
+        description: t.description,
+        confidence_score: t.confidence_score,
+        match_count: t.match_count,
+        fail_count: t.fail_count,
+        correction_count: t.correction_count,
+      })),
+    );
+  }
+
   return (
     <div>
       <PageHeader
@@ -116,8 +143,14 @@ export function RegexEnginePage() {
         subtitle="Self-improving parsing pipeline · monitoring & debug"
         actions={
           <>
-            <button className="btn"><Download size={14} /> Export</button>
-            <button className="btn primary"><Plus size={14} /> Trigger audit</button>
+            <button className="btn" onClick={handleExport}><Download size={14} /> Export</button>
+            <button
+              className="btn primary"
+              onClick={() => bulkReaudit.mutate()}
+              disabled={bulkReaudit.isPending}
+            >
+              <Plus size={14} /> {bulkReaudit.isPending ? 'Re-auditing…' : 'Trigger audit'}
+            </button>
           </>
         }
       />

@@ -12,7 +12,7 @@ import { useState } from 'react';
 
 export function OverviewPage() {
   const [range, setRange] = useState('30d');
-  const { data, isLoading, isError } = useOverview();
+  const { data, isLoading, isError, refetch, isRefetching } = useOverview();
 
   if (isLoading) return <Spinner />;
   if (isError || !data) return <ErrorState />;
@@ -33,7 +33,9 @@ export function OverviewPage() {
               <option value="30d">Last 30 days</option>
               <option value="90d">Last 90 days</option>
             </select>
-            <button className="btn"><RefreshCw size={14} /> Refresh</button>
+            <button className="btn" onClick={() => refetch()} disabled={isRefetching}>
+              <RefreshCw size={14} style={isRefetching ? { animation: 'spin 0.7s linear infinite' } : undefined} /> Refresh
+            </button>
           </>
         }
       />

@@ -10,6 +10,7 @@ import { LineChartWidget } from '@/components/charts/LineChart';
 import { DonutChart } from '@/components/charts/DonutChart';
 import { useAiUsage } from '@/hooks/use-ai-usage';
 import { fmt } from '@/utils/fmt';
+import { downloadCsv } from '@/utils/csv-export';
 
 const PALETTE = ['var(--c1)', 'var(--c2)', 'var(--c3)', 'var(--c4)', 'var(--c5)', 'var(--c6)'];
 const TARGET_CPT = 0.0001;
@@ -38,6 +39,10 @@ export function AIUsagePage() {
     color: PALETTE[i % PALETTE.length],
   }));
 
+  function handleExport() {
+    downloadCsv(`ai-usage-${range}.csv`, ai.by_operation);
+  }
+
   return (
     <div>
       <PageHeader
@@ -50,7 +55,7 @@ export function AIUsagePage() {
               <option value="30d">Last 30 days</option>
               <option value="90d">Last 90 days</option>
             </select>
-            <button className="btn"><Download size={14} /> Export</button>
+            <button className="btn" onClick={handleExport}><Download size={14} /> Export</button>
           </>
         }
       />

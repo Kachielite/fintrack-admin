@@ -23,8 +23,13 @@ function formatLastSynced(lastSyncedAt: string | null): string {
 
 export function IngestionPage() {
   const [range, setRange] = useState('30d');
-  const { data: health, isLoading: hLoading, isError: hError } = useIngestionHealth();
-  const { data: timeline, isLoading: tLoading, isError: tError } = useIngestionTimeline();
+  const { data: health, isLoading: hLoading, isError: hError, refetch: refetchHealth, isRefetching: hRefetching } = useIngestionHealth();
+  const { data: timeline, isLoading: tLoading, isError: tError, refetch: refetchTimeline } = useIngestionTimeline();
+
+  function handleRefresh() {
+    refetchHealth();
+    refetchTimeline();
+  }
 
   if (hLoading || tLoading) return <Spinner />;
   if (hError || !health) return <ErrorState />;
@@ -60,7 +65,9 @@ export function IngestionPage() {
               <option value="7d">Last 7 days</option>
               <option value="30d">Last 30 days</option>
             </select>
-            <button className="btn"><RefreshCw size={14} /> Refresh</button>
+            <button className="btn" onClick={handleRefresh} disabled={hRefetching}>
+              <RefreshCw size={14} style={hRefetching ? { animation: 'spin 0.7s linear infinite' } : undefined} /> Refresh
+            </button>
           </>
         }
       />
