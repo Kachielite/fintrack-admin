@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Filter, Download } from 'lucide-react';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { SectionHeader } from '@/components/layout/SectionHeader';
@@ -13,7 +13,15 @@ import { resolveDateRange } from '@/utils/date-range';
 
 export function TransactionsPage() {
   const [range, setRange] = useState('30d');
-  const { data, isLoading, isError } = useTransactionVolume(resolveDateRange(range));
+  // resolveDateRange calls new Date() internally, so calling it inline in the
+  // render body produced a millisecond-different {from, to} on every render.
+  // That object feeds useTransactionVolume's queryKey, so React Query saw a
+  // "new" query every render, refetched, the state update triggered another
+  // render, and so on - an infinite refetch loop hitting production
+  // continuously. Memoized so it only recomputes when range actually
+  // changes.
+  const dateRange = useMemo(() => resolveDateRange(range), [range]);
+  const { data, isLoading, isError } = useTransactionVolume(dateRange);
 
   if (isLoading) return <Spinner />;
   if (isError || !data) return <ErrorState />;

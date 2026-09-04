@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { RefreshCw, Mail } from 'lucide-react';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { SectionHeader } from '@/components/layout/SectionHeader';
@@ -29,7 +29,11 @@ export function IngestionPage() {
   // the range selector only affects the timeline chart below. See
   // fintrack-frontend#68.
   const { data: health, isLoading: hLoading, isError: hError, refetch: refetchHealth, isRefetching: hRefetching } = useIngestionHealth();
-  const { data: timeline, isLoading: tLoading, isError: tError, refetch: refetchTimeline } = useIngestionTimeline(resolveDateRange(range));
+  // Memoized - resolveDateRange calls new Date() internally, so calling it
+  // inline in the render body produced a different queryKey (and therefore
+  // an infinite refetch loop) on every render.
+  const dateRange = useMemo(() => resolveDateRange(range), [range]);
+  const { data: timeline, isLoading: tLoading, isError: tError, refetch: refetchTimeline } = useIngestionTimeline(dateRange);
 
   function handleRefresh() {
     refetchHealth();

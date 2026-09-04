@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Download } from 'lucide-react';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { SectionHeader } from '@/components/layout/SectionHeader';
@@ -18,7 +18,12 @@ const TARGET_CPT = 0.0001;
 
 export function AIUsagePage() {
   const [range, setRange] = useState('30d');
-  const { data, isLoading, isError } = useAiUsage(resolveDateRange(range));
+  // See the comment in Transactions.tsx - resolveDateRange must be memoized,
+  // not called inline in the render body, or its internal new Date() call
+  // produces a different queryKey on every render and causes an infinite
+  // refetch loop.
+  const dateRange = useMemo(() => resolveDateRange(range), [range]);
+  const { data, isLoading, isError } = useAiUsage(dateRange);
 
   if (isLoading) return <Spinner />;
   if (isError || !data) return <ErrorState />;
