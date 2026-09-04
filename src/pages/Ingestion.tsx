@@ -11,6 +11,7 @@ import { BarChartWidget } from '@/components/charts/BarChart';
 import { useIngestionHealth } from '@/hooks/use-ingestion-health';
 import { useIngestionTimeline } from '@/hooks/use-ingestion-timeline';
 import { fmt } from '@/utils/fmt';
+import { resolveDateRange } from '@/utils/date-range';
 
 function formatLastSynced(lastSyncedAt: string | null): string {
   if (!lastSyncedAt) return 'never';
@@ -23,8 +24,12 @@ function formatLastSynced(lastSyncedAt: string | null): string {
 
 export function IngestionPage() {
   const [range, setRange] = useState('30d');
+  // getIngestionHealth is a real-time snapshot with no server-side date
+  // scoping (its own response shape is fixed at pipeline_30d/outcomes_30d) -
+  // the range selector only affects the timeline chart below. See
+  // fintrack-frontend#68.
   const { data: health, isLoading: hLoading, isError: hError, refetch: refetchHealth, isRefetching: hRefetching } = useIngestionHealth();
-  const { data: timeline, isLoading: tLoading, isError: tError, refetch: refetchTimeline } = useIngestionTimeline();
+  const { data: timeline, isLoading: tLoading, isError: tError, refetch: refetchTimeline } = useIngestionTimeline(resolveDateRange(range));
 
   function handleRefresh() {
     refetchHealth();

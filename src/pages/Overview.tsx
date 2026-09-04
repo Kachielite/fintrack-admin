@@ -11,6 +11,12 @@ import { fmt } from '@/utils/fmt';
 import { useState } from 'react';
 
 export function OverviewPage() {
+  // The range selector is not wired to useOverview: GET /admin/overview
+  // ignores query params entirely server-side (every metric it returns is a
+  // fixed window - e.g. count_30d, active_30d - not a caller-supplied
+  // range), so passing a dateRange here would be silently dropped rather
+  // than actually filtering anything. Wiring it meaningfully needs backend
+  // work beyond this ticket's scope - see fintrack-frontend#68.
   const [range, setRange] = useState('30d');
   const { data, isLoading, isError, refetch, isRefetching } = useOverview();
 
