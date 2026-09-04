@@ -10,13 +10,14 @@ import { LineChartWidget } from '@/components/charts/LineChart';
 import { DonutChart } from '@/components/charts/DonutChart';
 import { useAiUsage } from '@/hooks/use-ai-usage';
 import { fmt } from '@/utils/fmt';
+import { resolveDateRange } from '@/utils/date-range';
 
 const PALETTE = ['var(--c1)', 'var(--c2)', 'var(--c3)', 'var(--c4)', 'var(--c5)', 'var(--c6)'];
 const TARGET_CPT = 0.0001;
 
 export function AIUsagePage() {
   const [range, setRange] = useState('30d');
-  const { data, isLoading, isError } = useAiUsage();
+  const { data, isLoading, isError } = useAiUsage(resolveDateRange(range));
 
   if (isLoading) return <Spinner />;
   if (isError || !data) return <ErrorState />;
