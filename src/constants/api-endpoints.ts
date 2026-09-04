@@ -20,4 +20,5 @@ export const API_ENDPOINTS = {
   // Actions
   PROMOTE_TEMPLATE: (id: number) => `/admin/regex/templates/${id}/promote`,
   AUDIT_TEMPLATE: (id: number) => `/admin/regex/templates/${id}/audit`,
+  BULK_REAUDIT: '/admin/regex/templates/bulk-reaudit',
 } as const;

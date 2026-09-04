@@ -8,6 +8,7 @@ import { ErrorState } from '@/components/ui/ErrorState';
 import { HorizontalBars } from '@/components/charts/BarChart';
 import { useTransactionVolume } from '@/hooks/use-transaction-volume';
 import { fmt } from '@/utils/fmt';
+import { downloadCsv } from '@/utils/csv-export';
 import { resolveDateRange } from '@/utils/date-range';
 
 export function TransactionsPage() {
@@ -25,6 +26,15 @@ export function TransactionsPage() {
     color: `var(--c${(i % 6) + 1})`,
   }));
 
+  function handleExport() {
+    const rows = [
+      ...data!.by_bank.map((b) => ({ breakdown: 'by_bank', name: b.bank_name, count: b.count })),
+      ...data!.by_currency.map((c) => ({ breakdown: 'by_currency', name: c.currency, count: c.count })),
+      ...data!.by_category.map((c) => ({ breakdown: 'by_category', name: c.category, count: c.count })),
+    ];
+    downloadCsv(`transactions-${range}.csv`, rows);
+  }
+
   return (
     <div>
       <PageHeader
@@ -39,7 +49,7 @@ export function TransactionsPage() {
               <option value="custom">Custom range</option>
             </select>
             <button className="btn"><Filter size={14} /> Filter</button>
-            <button className="btn"><Download size={14} /> Export</button>
+            <button className="btn" onClick={handleExport}><Download size={14} /> Export</button>
           </div>
         }
       />
