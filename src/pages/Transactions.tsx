@@ -8,10 +8,11 @@ import { ErrorState } from '@/components/ui/ErrorState';
 import { HorizontalBars } from '@/components/charts/BarChart';
 import { useTransactionVolume } from '@/hooks/use-transaction-volume';
 import { fmt } from '@/utils/fmt';
+import { resolveDateRange } from '@/utils/date-range';
 
 export function TransactionsPage() {
   const [range, setRange] = useState('30d');
-  const { data, isLoading, isError } = useTransactionVolume();
+  const { data, isLoading, isError } = useTransactionVolume(resolveDateRange(range));
 
   if (isLoading) return <Spinner />;
   if (isError || !data) return <ErrorState />;

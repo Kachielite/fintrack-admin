@@ -53,6 +53,12 @@ function SortTh({ label, sortKey, current, dir, onToggle, align }: {
 }
 
 export function RegexEnginePage() {
+  // Not wired into useRegexHealth: GET /admin/regex/health ignores query
+  // params entirely server-side (no date-range or bank-scoping support
+  // exists there today, unlike ingestion/timeline, transactions/volume, and
+  // ai/usage which genuinely honor a dateRange). Wiring either the tabs or
+  // the bank dropdown meaningfully needs backend work beyond this ticket's
+  // scope - see fintrack-frontend#68.
   const [timeRange, setTimeRange] = useState('30d');
   const [expanded, setExpanded] = useState<number | null>(null);
   const [search, setSearch] = useState('');
